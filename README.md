@@ -1,6 +1,7 @@
 # Snake Clásico
-### Juego creado por Javier Fuentes
-### Alumno de 2º DAM para el módulo de DEDIN
+### Alumno: Javier Fuentes
+### Curso: 2º DAM 
+### Módulo: DEDIN
 ---
 Este juego consiste en mover una serpiente por el tablero de juego para que vaya recogiendo las manzanas que aparecen.
 
