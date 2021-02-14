@@ -12,7 +12,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
-import pantallas.PantallaJuego;
+import pantallas.PantallaInicio;
 
 /**
  * Panel de Juego
@@ -34,7 +34,7 @@ public class PanelJuego extends JPanel
      * Constructor
      */
     public PanelJuego() {
-        pantallaActual = new PantallaJuego(this);
+        pantallaActual = new PantallaInicio(this);
         pantallaActual.inicializarPantalla();
 
         // Añadir Hilo y Eventos

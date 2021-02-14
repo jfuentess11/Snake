@@ -1,6 +1,7 @@
 package pantallas;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
@@ -35,13 +36,16 @@ public class PantallaJuego implements Pantalla {
     private int LADO_MANZANA = 15;
     private String RUTA_MANZANA = "Imagenes/manzana.png";
 
+    private int ALTO_PANEL_SUPERIOR = 40;
+
     private Sprite manzana;
     private ArrayList<Sprite> serpiente;
     private BufferedImage fondo = null;
     private Image fondoRedimensionado;
     private String direccion;
-    private int puntuacion;
+    private static int puntuacion;
     private boolean finJuego = false;
+    private int puntuacionMaxima;
 
     // Constructor
     public PantallaJuego(PanelJuego panelJuego) {
@@ -51,24 +55,29 @@ public class PantallaJuego implements Pantalla {
     @Override
     public void inicializarPantalla() {
         serpiente = new ArrayList<Sprite>();
-        serpiente.add(new Sprite(COLOR_SERPIENTE, LADO_SERPIENTE, LADO_SERPIENTE, LADO_SERPIENTE));
+        serpiente.add(new Sprite(COLOR_SERPIENTE, LADO_SERPIENTE, LADO_SERPIENTE * 2, LADO_SERPIENTE * 4));
 
-        //manzana = new Sprite(RUTA_MANZANA, LADO_MANZANA, LADO_MANZANA * 2, LADO_MANZANA * 2);
-        manzana = new Sprite(RUTA_MANZANA, LADO_MANZANA, 360, 340);
+        manzana = new Sprite(RUTA_MANZANA, LADO_MANZANA, LADO_MANZANA * 5, LADO_MANZANA * 6);
 
         direccion = "DOWN";
         puntuacion = 0;
+        puntuacionMaxima = (panelJuego.getHeight() - ALTO_PANEL_SUPERIOR * panelJuego.getWidth()) / LADO_SERPIENTE;
+
         try {
             fondo = ImageIO.read(new File("Imagenes/fondo.jpg"));
         } catch (Exception e) {
 
         }
-
+        redimensionarPantalla(null);
     }
 
     @Override
     public void pintarPantalla(Graphics g) {
         rellenarFondo(g);
+
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString("Puntuación: " + puntuacion, 10, 30);
+        g.drawRect(0, 0, panelJuego.getWidth(), ALTO_PANEL_SUPERIOR);
 
         if (manzana != null) {
             manzana.estampar(g);
@@ -87,97 +96,101 @@ public class PantallaJuego implements Pantalla {
 
     @Override
     public void ejecutarFrame() {
+
         if (!finJuego) {
-            try {
-                Thread.sleep(200);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            panelJuego.requestFocus();
-
-            for (int i = serpiente.size() - 1; i >= 0; i--) {
-                if (i == 0) {
-                    calcularMovimientoCabeza();
-                } else {
-                    int movXAnterior = serpiente.get(i - 1).getVelX();
-                    int movYAnterior = serpiente.get(i - 1).getVelY();
-                    serpiente.get(i).setVelX(movXAnterior);
-                    serpiente.get(i).setVelY(movYAnterior);
-                }
-            }
-
-            for (Sprite sprite : serpiente) {
-                sprite.mover();
-            }
-
-            if (serpiente.size() > 4) {
-                for (int i = 0; i < serpiente.size() - 1; i++) {
-                    for (int j = i + 4; j < serpiente.size(); j++) {
-
-                        if (serpiente.get(i).colisiona(serpiente.get(j))) {
-                            finJuego = true;
-                        }
-                    }
-                }
-            }
-
-            if (serpiente.get(0).getPosX() > panelJuego.getWidth()) {
-                finJuego = true;
-            } else if (serpiente.get(0).getPosX() < 0) {
-                finJuego = true;
-            } else if (serpiente.get(0).getPosY() < 0) {
-                finJuego = true;
-            } else if (serpiente.get(0).getPosY() > panelJuego.getHeight()) {
-                finJuego = true;
-            }
-
-            if (manzana != null) {
-                if (serpiente.get(0).colisiona(manzana)) {
-                    manzana = null;
-                    puntuacion++;
-                    addSpriteSerpiente();
-                    System.out.println(puntuacion);
-                }
-            }
 
             if (manzana == null) {
                 crearManzana();
-            }
 
-            if (finJuego) {
-                System.out.println("END");
+                for (int i = 1; i < serpiente.size(); i++) {
+                    if (serpiente.get(i).colisiona(manzana)) {
+                        manzana = null;
+                        break;
+                    }
+                }
+
+            } else {
+                try {
+                    Thread.sleep(200);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                panelJuego.requestFocus();
+
+                for (int i = serpiente.size() - 1; i >= 0; i--) {
+                    if (i == 0) {
+                        calcularMovimientoCabeza();
+                    } else {
+                        int movXAnterior = serpiente.get(i - 1).getVelX();
+                        int movYAnterior = serpiente.get(i - 1).getVelY();
+                        serpiente.get(i).setVelX(movXAnterior);
+                        serpiente.get(i).setVelY(movYAnterior);
+                    }
+                }
+
+                for (Sprite sprite : serpiente) {
+                    sprite.mover();
+                }
+
+                if (serpiente.size() > 4) {
+                    for (int i = 0; i < serpiente.size() - 1; i++) {
+                        for (int j = i + 4; j < serpiente.size(); j++) {
+                            if (serpiente.get(i).colisiona(serpiente.get(j))) {
+                                finJuego = true;
+                            }
+                        }
+                    }
+                }
+
+                if (serpiente.get(0).getPosX() > panelJuego.getWidth()) {
+                    finJuego = true;
+                } else if (serpiente.get(0).getPosX() < 0) {
+                    finJuego = true;
+                } else if (serpiente.get(0).getPosY() < ALTO_PANEL_SUPERIOR) {
+                    finJuego = true;
+                } else if (serpiente.get(0).getPosY() > panelJuego.getHeight()) {
+                    finJuego = true;
+                }
+
+                if (serpiente.size() == puntuacionMaxima) {
+                    System.out.println("WIN");
+                    pasarDePantalla(new PantallaVictoria(panelJuego));
+                }
+
+                if (manzana != null) {
+                    if (serpiente.get(0).colisiona(manzana)) {
+                        manzana = null;
+                        puntuacion++;
+                        addSpriteSerpiente();
+                        System.out.println(puntuacion);
+                    }
+                }
+
+                if (finJuego) {
+                    System.out.println("END");
+                    pasarDePantalla(new PantallaDerrota(panelJuego));
+                }
             }
         }
     }
 
     private void crearManzana() {
-        boolean haySerpiente = false;
+        // boolean haySerpiente = false;
         int posX;
         int posY;
+        // do {
         do {
-            do {
-                posX = new Random().nextInt((panelJuego.getWidth() - LADO_MANZANA));
-                if (posX % LADO_MANZANA != 0) {
-                    continue;
-                }
-                posY = new Random().nextInt((panelJuego.getHeight() - LADO_MANZANA));
-                if (posY % LADO_MANZANA != 0) {
-                    continue;
-                }
-                break;
-            } while (true);
-
-            for (Sprite sprite : serpiente) {
-
-                int posXSerpiente = sprite.getPosX();
-                int posYSerpiente = sprite.getPosY();
-
-                if (posX == posXSerpiente && posY == posYSerpiente) {
-                    haySerpiente = true;
-                    break;
-                }
+            posX = new Random().nextInt((panelJuego.getWidth() - LADO_MANZANA));
+            if (posX % LADO_MANZANA != 0) {
+                continue;
             }
-        } while (haySerpiente);
+            posY = new Random().nextInt((panelJuego.getHeight() - LADO_MANZANA) - ALTO_PANEL_SUPERIOR)
+                    + ALTO_PANEL_SUPERIOR;
+            if (posY % LADO_MANZANA != 0) {
+                continue;
+            }
+            break;
+        } while (true);
 
         manzana = new Sprite(RUTA_MANZANA, LADO_MANZANA, posX, posY);
     }
@@ -274,6 +287,10 @@ public class PantallaJuego implements Pantalla {
                 direccion = "DOWN";
             }
         }
+    }
+
+    public static int getPuntuacion() {
+        return puntuacion;
     }
 
 }
