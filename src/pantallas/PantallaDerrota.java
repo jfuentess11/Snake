@@ -24,19 +24,16 @@ public class PantallaDerrota implements Pantalla {
 
     // Referencia al Panel de Juego
     private PanelJuego panelJuego;
-
     // Color del texto
     private Color texto;
     private Color inicio;
-
     // Fuentes de la pantalla del inicio
     private Font fuenteGrande;
     private Font fuentePequenna;
-
     // Imagen de fondo redimensionada
     private BufferedImage fondo = null;
     private Image fondoRedimensionado;
-
+    // Puntuación final
     private int puntuacion;
 
     // Constructor
@@ -64,11 +61,12 @@ public class PantallaDerrota implements Pantalla {
     public void pintarPantalla(Graphics g) {
         // Pinta el fondo de pantalla
         rellenarFondo(g);
-        // Texto de derrota con la fuente y el color querido
+        // Texto de derrota
         g.setFont(fuenteGrande);
         g.setColor(texto);
         g.drawString("¡HAS PERDIDO!", 120, 100);
         g.setFont(fuentePequenna);
+        // Información sobre los puntos obtenidos
         g.drawString("Tu puntuación ha sido: ", 155, 120);
         g.setFont(fuenteGrande);
         g.drawString(""+puntuacion, 210, 150);
@@ -114,8 +112,6 @@ public class PantallaDerrota implements Pantalla {
 
     @Override
     public void teclaPulsada(KeyEvent e) {
-        // TODO Auto-generated method stub
-
     }
     
 }

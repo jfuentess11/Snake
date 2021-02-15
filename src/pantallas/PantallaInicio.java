@@ -24,13 +24,10 @@ import principal.Pantalla;
 public class PantallaInicio implements Pantalla {
     // Referencia al Panel de Juego
     private PanelJuego panelJuego;
-
     // Color del texto
     private Color texto;
-
     // Fuente de la pantalla del inicio
-    private Font fuenteInicio;
-
+    private Font fuente;
     // Imagen de fondo redimensionada
     private BufferedImage fondo = null;
     private Image fondoRedimensionado;
@@ -39,7 +36,7 @@ public class PantallaInicio implements Pantalla {
     public PantallaInicio(PanelJuego panelJuego) {
         this.panelJuego = panelJuego;
         texto = Color.WHITE;
-        fuenteInicio = new Font("Arial", Font.BOLD, 30);
+        fuente = new Font("Arial", Font.BOLD, 30);
     }
 
     @Override
@@ -55,26 +52,27 @@ public class PantallaInicio implements Pantalla {
     @Override
     public void pintarPantalla(Graphics g) {
         // Forzamos redimensionar la pantalla para actualizar el fondo de pantalla
-        redimensionarPantalla(null);
+        //redimensionarPantalla(null);
         // Pinta el fondo de pantalla
         rellenarFondo(g);
         // Escribe un título con la fuente y el color querido
-        g.setFont(fuenteInicio);
+        g.setFont(fuente);
         g.setColor(texto);
         g.drawString("SNAKE CLÁSICO", panelJuego.getWidth() / 2 - 120,
                 panelJuego.getHeight() / 4);
 
         // Pinta un cuadrado y un texto de empezar a jugar con colores aleatorios en
         // cada refresco
-        // Los colores que saldrá serán colores claros para verse mejor sobre el fondo
-        // oscuro
         g.setColor(new Color(colorOscuro(), colorOscuro() , colorOscuro()));
         g.drawRect(80 - 10, (panelJuego.getHeight() - 100) - 30, 165, 80);
         g.drawString("Comenzar", 80, panelJuego.getHeight() - 100);
         g.drawString("a Jugar", 100, panelJuego.getHeight() - 60);
 
     }
-
+    /**
+     * Método que genera un float de 0.0 a 0.5 para sacar un color oscuro para el texto
+     * @return float entre 0.0 y 0.5
+     */
     private float colorOscuro() {
         float n = new Random().nextInt(6);
         return n/10;
@@ -112,8 +110,6 @@ public class PantallaInicio implements Pantalla {
     }
 
     @Override
-    public void teclaPulsada(KeyEvent e) {
-        // TODO Auto-generated method stub
-
+    public void teclaPulsada(KeyEvent e){
     }
 }

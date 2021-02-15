@@ -36,7 +36,8 @@ public class PantallaVictoria implements Pantalla {
     // Imagen de fondo redimensionada
     private BufferedImage fondo = null;
     private Image fondoRedimensionado;
-
+    
+    // Puntuación final
     private int puntuacion;
 
     // Constructor
@@ -64,10 +65,11 @@ public class PantallaVictoria implements Pantalla {
     public void pintarPantalla(Graphics g) {
         // Pinta el fondo de pantalla
         rellenarFondo(g);
-        // Texto de derrota con la fuente y el color querido
+        // Texto de derrota
         g.setFont(fuenteGrande);
         g.setColor(texto);
         g.drawString("¡HAS GANADO!", 120, 100);
+        // Texto indicando la puntuación obtenida
         g.setFont(fuentePequenna);
         g.drawString("Tu puntuación ha sido: ", 155, 120);
         g.setFont(fuenteGrande);
@@ -114,8 +116,6 @@ public class PantallaVictoria implements Pantalla {
 
     @Override
     public void teclaPulsada(KeyEvent e) {
-        // TODO Auto-generated method stub
-
     }
     
 }
