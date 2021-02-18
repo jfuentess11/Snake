@@ -28,11 +28,16 @@ public class PantallaJuego implements Pantalla {
     // Referencia al Panel de Juego
     private PanelJuego panelJuego;
     // CONSTANTES SERPIENTE
-    private int LADO_SERPIENTE = 15;
-    private Color COLOR_SERPIENTE = Color.BLUE;
-    private Color COLOR_CABEZA_SERPIENTE = Color.CYAN;
+    private int LADO_SERPIENTE = 20;
+    private String RUTA_CABEZA_DOWN = "Imagenes/cabezaDown.png";
+    private String RUTA_CABEZA_UP = "Imagenes/cabezaUp.png";
+    private String RUTA_CABEZA_LEFT = "Imagenes/cabezaLeft.png";
+    private String RUTA_CABEZA_RIGHT = "Imagenes/cabezaRight.png";
+    private String RUTA_CUERPO = "Imagenes/cuerpo.png";
+    //private Color COLOR_SERPIENTE = Color.BLUE;
+    //private Color COLOR_CABEZA_SERPIENTE = Color.CYAN;
     // CONSTANTES MANZANA
-    private int LADO_MANZANA = 15;
+    private int LADO_MANZANA = 20;
     private String RUTA_MANZANA = "Imagenes/manzana.png";
     // CONSTANTE ALTO DEL PANEL INFORMATIVO
     private int ALTO_PANEL_SUPERIOR = 40;
@@ -56,7 +61,7 @@ public class PantallaJuego implements Pantalla {
     public void inicializarPantalla() {
         // Inicia la serpiente y le añade el primer Sprite que será la cabeza
         serpiente = new ArrayList<Sprite>();
-        serpiente.add(new Sprite(COLOR_CABEZA_SERPIENTE, LADO_SERPIENTE, LADO_SERPIENTE * 2, LADO_SERPIENTE * 4));
+        serpiente.add(new Sprite(RUTA_CABEZA_DOWN, LADO_SERPIENTE, LADO_SERPIENTE * 2, LADO_SERPIENTE * 4));
         // Inicia la manzana
         manzana = new Sprite(RUTA_MANZANA, LADO_MANZANA, LADO_MANZANA * 5, LADO_MANZANA * 6);
         // La serpietnte se empeará a mover hacía abajo
@@ -105,7 +110,7 @@ public class PantallaJuego implements Pantalla {
         } else {
             // si ya hay manzana sigue la ejecución
             try {
-                Thread.sleep(200);
+                Thread.sleep(250);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -157,13 +162,13 @@ public class PantallaJuego implements Pantalla {
             }
         }
         // Comprueba si la serpiene colisiona con un límite del panel
-        if (serpiente.get(0).getPosX() > panelJuego.getWidth()) {
+        if (serpiente.get(0).getPosX() + LADO_SERPIENTE > panelJuego.getWidth()) {
             finJuego = true;
         } else if (serpiente.get(0).getPosX() < 0) {
             finJuego = true;
         } else if (serpiente.get(0).getPosY() < ALTO_PANEL_SUPERIOR) {
             finJuego = true;
-        } else if (serpiente.get(0).getPosY() > panelJuego.getHeight()) {
+        } else if (serpiente.get(0).getPosY() + LADO_SERPIENTE > panelJuego.getHeight()) {
             finJuego = true;
         }
         // Comprueba si la cabeza de la serpiente colisiona con la manzana
@@ -234,19 +239,19 @@ public class PantallaJuego implements Pantalla {
         Sprite ultimoSprite = serpiente.get(serpiente.size() - 1);
         // El ultimo se mueve a la derecha
         if (ultimoSprite.getVelX() == LADO_SERPIENTE) {
-            serpiente.add(new Sprite(COLOR_SERPIENTE, LADO_SERPIENTE, ultimoSprite.getPosX() - LADO_SERPIENTE,
+            serpiente.add(new Sprite(RUTA_CUERPO, LADO_SERPIENTE, ultimoSprite.getPosX() - LADO_SERPIENTE,
                     ultimoSprite.getPosY()));
             // el ultimo de mueve a la izquierda
         } else if (ultimoSprite.getVelX() == -LADO_SERPIENTE) {
-            serpiente.add(new Sprite(COLOR_SERPIENTE, LADO_SERPIENTE, ultimoSprite.getPosX() + LADO_SERPIENTE,
+            serpiente.add(new Sprite(RUTA_CUERPO, LADO_SERPIENTE, ultimoSprite.getPosX() + LADO_SERPIENTE,
                     ultimoSprite.getPosY()));
             // el ultimo se mueve abajo
         } else if (ultimoSprite.getVelY() == LADO_SERPIENTE) {
-            serpiente.add(new Sprite(COLOR_SERPIENTE, LADO_SERPIENTE, ultimoSprite.getPosX(),
+            serpiente.add(new Sprite(RUTA_CUERPO, LADO_SERPIENTE, ultimoSprite.getPosX(),
                     ultimoSprite.getPosY() - LADO_SERPIENTE));
             // el ultimo se mueve arriba
         } else {
-            serpiente.add(new Sprite(COLOR_SERPIENTE, LADO_SERPIENTE, ultimoSprite.getPosX(),
+            serpiente.add(new Sprite(RUTA_CUERPO, LADO_SERPIENTE, ultimoSprite.getPosX(),
                     ultimoSprite.getPosY() + LADO_SERPIENTE));
         }
 
@@ -262,21 +267,25 @@ public class PantallaJuego implements Pantalla {
             case "UP":
                 serpiente.get(0).setVelX(0);
                 serpiente.get(0).setVelY(-LADO_SERPIENTE);
+                serpiente.get(0).cambiarImagen(RUTA_CABEZA_UP);
                 break;
             // Abajo
             case "DOWN":
                 serpiente.get(0).setVelX(0);
                 serpiente.get(0).setVelY(LADO_SERPIENTE);
+                serpiente.get(0).cambiarImagen(RUTA_CABEZA_DOWN);
                 break;
             // Derecha
             case "RIGHT":
                 serpiente.get(0).setVelX(LADO_SERPIENTE);
                 serpiente.get(0).setVelY(0);
+                serpiente.get(0).cambiarImagen(RUTA_CABEZA_RIGHT);
                 break;
             // Izquierda
             case "LEFT":
                 serpiente.get(0).setVelX(-LADO_SERPIENTE);
                 serpiente.get(0).setVelY(0);
+                serpiente.get(0).cambiarImagen(RUTA_CABEZA_LEFT);
                 break;
         }
     }

@@ -185,4 +185,8 @@ public class Sprite {
         this.velY = velY;
     }
 
+	public void cambiarImagen(String ruta) {
+        inicializarBufferImagen(ruta);
+	}
+
 }
