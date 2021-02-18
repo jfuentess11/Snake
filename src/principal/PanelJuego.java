@@ -46,7 +46,7 @@ public class PanelJuego extends JPanel
     }
 
     /**
-     * Métodoq ue cambiará la pantala actual que se encuatra en ejecución por la que
+     * Método que cambiará la pantala actual que se encuatra en ejecución por la que
      * recibe por parámetro
      * 
      * @param nuevaPantalla a la que se quiere cambiar

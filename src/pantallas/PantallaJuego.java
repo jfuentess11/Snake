@@ -1,6 +1,5 @@
 package pantallas;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -9,11 +8,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import principal.Cronometro;
 import principal.PanelJuego;
 import principal.Pantalla;
 import principal.Sprite;
@@ -35,8 +36,6 @@ public class PantallaJuego implements Pantalla {
     private String RUTA_CABEZA_LEFT = "Imagenes/cabezaLeft.png";
     private String RUTA_CABEZA_RIGHT = "Imagenes/cabezaRight.png";
     private String RUTA_CUERPO = "Imagenes/cuerpo.png";
-    // private Color COLOR_SERPIENTE = Color.BLUE;
-    // private Color COLOR_CABEZA_SERPIENTE = Color.CYAN;
     // CONSTANTES MANZANA
     private int LADO_MANZANA = 20;
     private String RUTA_MANZANA = "Imagenes/manzana.png";
@@ -48,15 +47,21 @@ public class PantallaJuego implements Pantalla {
     // Sprites de la pantalla
     private Sprite manzana;
     private ArrayList<Sprite> serpiente;
+    
     // Variables de control del juego
     private String direccion;
     private static int puntuacion;
     private boolean finJuego = false;
     private boolean haTecleado = false;
+    // Cronometro
+    private Cronometro cronometro;
+    // Formato del tiempo
+    private DecimalFormat formatoTiempo;
 
     // Constructor
     public PantallaJuego(PanelJuego panelJuego) {
         this.panelJuego = panelJuego;
+        formatoTiempo = new DecimalFormat("#");
     }
 
     @Override
@@ -77,6 +82,9 @@ public class PantallaJuego implements Pantalla {
         }
         // Fuerza el redimensionamiento de pantalla para cambiar la imagen de fondo
         redimensionarPantalla(null);
+        // Inicia el cronómetro
+        cronometro = new Cronometro();
+        cronometro.start();
     }
 
     @Override
@@ -85,7 +93,10 @@ public class PantallaJuego implements Pantalla {
         rellenarFondo(g);
         // Escribe la puntuación
         g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("Puntuación: " + puntuacion, 10, 30);
+        g.drawString("Puntuación: "+ (puntuacion<10?"0":"")+ puntuacion + "/50", 10, 30);
+        // Escribe el Tiempo
+        g.drawString("Tiempo:", 300, 30);
+        g.drawString(formatoTiempo.format(cronometro.getTiempoTranscurrido()/1e9), 420, 30);
         // pinta una linea que separará el tablero de juego del panel de información
         g.drawRect(0, 0, panelJuego.getWidth(), ALTO_PANEL_SUPERIOR);
         // Pinta la manzana
