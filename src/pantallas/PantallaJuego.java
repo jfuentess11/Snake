@@ -25,6 +25,7 @@ import principal.Sprite;
  */
 public class PantallaJuego implements Pantalla {
 
+    private float SEGUNDOS_HILO = 0.2f;
     // Referencia al Panel de Juego
     private PanelJuego panelJuego;
     // CONSTANTES SERPIENTE
@@ -34,8 +35,8 @@ public class PantallaJuego implements Pantalla {
     private String RUTA_CABEZA_LEFT = "Imagenes/cabezaLeft.png";
     private String RUTA_CABEZA_RIGHT = "Imagenes/cabezaRight.png";
     private String RUTA_CUERPO = "Imagenes/cuerpo.png";
-    //private Color COLOR_SERPIENTE = Color.BLUE;
-    //private Color COLOR_CABEZA_SERPIENTE = Color.CYAN;
+    // private Color COLOR_SERPIENTE = Color.BLUE;
+    // private Color COLOR_CABEZA_SERPIENTE = Color.CYAN;
     // CONSTANTES MANZANA
     private int LADO_MANZANA = 20;
     private String RUTA_MANZANA = "Imagenes/manzana.png";
@@ -51,6 +52,7 @@ public class PantallaJuego implements Pantalla {
     private String direccion;
     private static int puntuacion;
     private boolean finJuego = false;
+    private boolean haTecleado = false;
 
     // Constructor
     public PantallaJuego(PanelJuego panelJuego) {
@@ -71,7 +73,7 @@ public class PantallaJuego implements Pantalla {
         // Carga el fondo de pantalla
         try {
             fondo = ImageIO.read(new File("Imagenes/fondo.jpg"));
-        } catch (Exception e) { 
+        } catch (Exception e) {
         }
         // Fuerza el redimensionamiento de pantalla para cambiar la imagen de fondo
         redimensionarPantalla(null);
@@ -108,15 +110,16 @@ public class PantallaJuego implements Pantalla {
         if (manzana == null) {
             crearManzanaFueraDeLaSerpiente();
         } else {
+            // Reinicia para que pueda vover a pulsar una tecla de movimiento
+            haTecleado = false;
             // si ya hay manzana sigue la ejecución
             try {
-                Thread.sleep(250);
+                Thread.sleep(Long.parseLong(""+ (int)(SEGUNDOS_HILO * 1000)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
             // EL panel pide el foco para que funcione la detección de teclas para moverse
             panelJuego.requestFocus();
-
             moverSerpiente();
 
             combrobarColisiones();
@@ -128,7 +131,8 @@ public class PantallaJuego implements Pantalla {
     }
 
     /**
-     * Método encargado de comprobar el siguiente movimiento de la serpiente y de moverla
+     * Método encargado de comprobar el siguiente movimiento de la serpiente y de
+     * moverla
      */
     private void moverSerpiente() {
         for (int i = serpiente.size() - 1; i >= 0; i--) {
@@ -181,7 +185,7 @@ public class PantallaJuego implements Pantalla {
             }
         }
     }
-    
+
     /**
      * Este método se encargará de que la manzana siempre salga en una posición en
      * la que no se encuentre ninguna parte de la serpiente
@@ -258,7 +262,8 @@ public class PantallaJuego implements Pantalla {
     }
 
     /**
-     * Dependiendo de la dirección a la que se quiera mover se cambiará su velocidad de movimiento 
+     * Dependiendo de la dirección a la que se quiera mover se cambiará su velocidad
+     * de movimiento
      */
     private void calcularMovimientoCabeza() {
 
@@ -316,31 +321,43 @@ public class PantallaJuego implements Pantalla {
     }
 
     /**
-     * Controla la tecla pulsada por el usuario para cabiar la dirección de movimiento
+     * Controla la tecla pulsada por el usuario para cabiar la dirección de
+     * movimiento
      */
     @Override
     public void teclaPulsada(KeyEvent e) {
-        // Derecha
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            if (direccion != "LEFT") {
-                direccion = "RIGHT";
-            }
-            // Izquierda
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            if (direccion != "RIGHT") {
-                direccion = "LEFT";
-            }
-            // Arriba
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-            if (direccion != "DOWN") {
-                direccion = "UP";
-            }
-            // Abajo
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            if (direccion != "UP") {
-                direccion = "DOWN";
+
+        if (!haTecleado) {
+            // Derecha
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                if (direccion != "LEFT") {
+                    direccion = "RIGHT";
+                    haTecleado = true;
+                }
+                // Izquierda
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                if (direccion != "RIGHT") {
+                    direccion = "LEFT";
+                    haTecleado = true;
+
+                }
+                // Arriba
+            } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                if (direccion != "DOWN") {
+                    direccion = "UP";
+                    haTecleado = true;
+
+                }
+                // Abajo
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                if (direccion != "UP") {
+                    direccion = "DOWN";
+                    haTecleado = true;
+
+                }
             }
         }
+
     }
 
     /**
