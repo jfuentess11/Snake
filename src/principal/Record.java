@@ -7,6 +7,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Record
+ * 
+ * Clase encargada de gestionar el record de tiempo
+ * 
+ * @author Javier Fuentes
+ */
 public class Record {
     private final File FICHERO = new File("./datos/record.txt");
     private BufferedReader br;

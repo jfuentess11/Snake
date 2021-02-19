@@ -18,7 +18,7 @@ import principal.Pantalla;
 import principal.Record;
 
 /**
- * Pantalla de Derrota
+ * Pantalla de Victoria
  * 
  * @author Javier Fuentes
  */

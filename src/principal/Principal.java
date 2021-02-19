@@ -3,8 +3,8 @@ package principal;
 import java.awt.EventQueue;
 
 /**
- * Ejercicio 
- * @author Jesús Redondo García
+ * Snake 
+ * @author Javier Fuentes
  */
 public class Principal {
     
