@@ -48,7 +48,8 @@ public class PantallaVictoria implements Pantalla {
 
     // Fichero de records
     private Record ficheroRecord;
-
+    
+    // COmprobar si ha habido record de tiempo
     private boolean esRecord;
 
     // Constructor
@@ -84,11 +85,12 @@ public class PantallaVictoria implements Pantalla {
         g.setFont(fuenteGrande);
         g.setColor(texto);
         g.drawString("¡HAS GANADO!", 120, 100);
-        // Texto indicando la puntuación obtenida
+        // Texto indicando el tiempo obtenido
         g.setFont(fuentePequenna);
         g.drawString("Tu tiempo ha sido: ", 110, 135);
         g.setFont(fuenteGrande);
         g.drawString(tiempoFormateado() + " seg", 250, 135);
+        // Testo de nuevo record
         if(esRecord){
             g.setFont(fuentePequenna);
             record = (record == Color.RED?Color.BLUE:Color.RED);
@@ -104,6 +106,10 @@ public class PantallaVictoria implements Pantalla {
         g.drawString("VOLVER A JUGAR", 120, panelJuego.getHeight() - 150);
     }
 
+    /**
+     * Método que devuelve el tiempo formateado
+     * @return tiempo formateado
+     */
     private String tiempoFormateado() {
         String time = formatoTiempo.format(tiempo/1e9);
         if(Integer.parseInt(time) < 10){

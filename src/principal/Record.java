@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Record {
-    private final File FICHERO = new File("./record.txt");
+    private final File FICHERO = new File("./datos/record.txt");
     private BufferedReader br;
     private BufferedWriter bw;
     private long record = Long.MAX_VALUE;

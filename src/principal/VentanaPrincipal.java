@@ -13,8 +13,6 @@ public class VentanaPrincipal {
 	private JFrame ventana;
 	private PanelJuego panelJuego;
 	
-
-
 	/**
      * Constructor, marca el tamaño y el cierre del frame
      */

@@ -117,16 +117,6 @@ public class PantallaJuego implements Pantalla {
 
     }
 
-    private String tiempoFormateado() {
-        String time = formatoTiempo.format(cronometro.getTiempoTranscurrido()/1e9);
-        if(Integer.parseInt(time) < 10){
-            time = "00"+time;
-        }else if(Integer.parseInt(time) < 100){
-            time = "0"+time;
-        }
-        return time;
-    }
-
     @Override
     public void rellenarFondo(Graphics g) {
         g.drawImage(fondoRedimensionado, 0, 0, null);
@@ -158,16 +148,20 @@ public class PantallaJuego implements Pantalla {
         }
     }
 
-    private void finDelJuego(boolean vicroria) {
-        if(vicroria){
-            pasarDePantalla(new PantallaVictoria(panelJuego));
-        }else{
-            pasarDePantalla(new PantallaDerrota(panelJuego));
+    /**
+     * Método que devuelve el tiempo formateado
+     * @return tiempo formateado
+     */
+    private String tiempoFormateado() {
+        String time = formatoTiempo.format(cronometro.getTiempoTranscurrido()/1e9);
+        if(Integer.parseInt(time) < 10){
+            time = "00"+time;
+        }else if(Integer.parseInt(time) < 100){
+            time = "0"+time;
         }
-        
-        
+        return time;
     }
-
+    
     /**
      * Método encargado de comprobar el siguiente movimiento de la serpiente y de
      * moverla
@@ -334,6 +328,19 @@ public class PantallaJuego implements Pantalla {
                 serpiente.get(0).cambiarImagen(RUTA_CABEZA_LEFT);
                 break;
         }
+    }   
+
+    /**
+     * Método que recibiendo un parámetro muestra una pantallad e victoria o derrota
+     * @param vicroria
+     */
+    private void finDelJuego(boolean vicroria) {
+        if(vicroria){
+            pasarDePantalla(new PantallaVictoria(panelJuego));
+        }else{
+            pasarDePantalla(new PantallaDerrota(panelJuego));
+        }
+        
     }
 
     /**
