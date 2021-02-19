@@ -9,11 +9,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.DecimalFormat;
 
 import javax.imageio.ImageIO;
 
 import principal.PanelJuego;
 import principal.Pantalla;
+import principal.Record;
 
 /**
  * Pantalla de Derrota
@@ -28,6 +30,7 @@ public class PantallaVictoria implements Pantalla {
     // Color del texto
     private Color texto;
     private Color inicio;
+    private Color record;
 
     // Fuentes de la pantalla del inicio
     private Font fuenteGrande;
@@ -36,18 +39,30 @@ public class PantallaVictoria implements Pantalla {
     // Imagen de fondo redimensionada
     private BufferedImage fondo = null;
     private Image fondoRedimensionado;
-    
-    // Puntuación final
-    private int puntuacion;
+
+    // Tiempo 
+    private long tiempo;
+
+    // Formato tiempo
+    private DecimalFormat formatoTiempo;
+
+    // Fichero de records
+    private Record ficheroRecord;
+
+    private boolean esRecord;
 
     // Constructor
     public PantallaVictoria(PanelJuego panelJuego) {
         this.panelJuego = panelJuego;
         texto = Color.GREEN;
         inicio = Color.WHITE;
+        record = Color.RED;
+        formatoTiempo = new DecimalFormat("#");
         fuenteGrande = new Font("Arial", Font.BOLD, 30);
         fuentePequenna = new Font("Arial", Font.BOLD ,15);
-        puntuacion = PantallaJuego.getPuntuacion();
+        tiempo = PantallaJuego.getTiempo();
+        ficheroRecord = new Record();
+        esRecord = ficheroRecord.comprobarRecord(tiempo);
     }
 
     @Override
@@ -71,9 +86,15 @@ public class PantallaVictoria implements Pantalla {
         g.drawString("¡HAS GANADO!", 120, 100);
         // Texto indicando la puntuación obtenida
         g.setFont(fuentePequenna);
-        g.drawString("Tu puntuación ha sido: ", 155, 120);
+        g.drawString("Tu tiempo ha sido: ", 110, 135);
         g.setFont(fuenteGrande);
-        g.drawString(""+puntuacion, 210, 150);
+        g.drawString(tiempoFormateado() + " seg", 250, 135);
+        if(esRecord){
+            g.setFont(fuentePequenna);
+            record = (record == Color.RED?Color.BLUE:Color.RED);
+            g.setColor(record);
+            g.drawString("Has conseguido un NUEVO RECORD", 100, 160);
+        }
         // Texto para que indica que pulses para volver a jugar que irá cambiando de
         // color entre blanco y gris
         inicio = (inicio == Color.WHITE ? Color.GRAY : Color.WHITE);
@@ -81,6 +102,16 @@ public class PantallaVictoria implements Pantalla {
         g.setColor(inicio);
         g.drawRect((120) - 10, (panelJuego.getHeight() - 150) - 30, 150, 50);
         g.drawString("VOLVER A JUGAR", 120, panelJuego.getHeight() - 150);
+    }
+
+    private String tiempoFormateado() {
+        String time = formatoTiempo.format(tiempo/1e9);
+        if(Integer.parseInt(time) < 10){
+            time = "00"+time;
+        }else if(Integer.parseInt(time) < 100){
+            time = "0"+time;
+        }
+        return time;
     }
 
     @Override

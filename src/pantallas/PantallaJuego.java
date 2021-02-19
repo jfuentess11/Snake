@@ -1,5 +1,6 @@
 package pantallas;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -47,21 +48,24 @@ public class PantallaJuego implements Pantalla {
     // Sprites de la pantalla
     private Sprite manzana;
     private ArrayList<Sprite> serpiente;
-    
     // Variables de control del juego
     private String direccion;
     private static int puntuacion;
     private boolean finJuego = false;
+    private boolean victoria = false;
     private boolean haTecleado = false;
     // Cronometro
-    private Cronometro cronometro;
+    private static Cronometro cronometro;
     // Formato del tiempo
     private DecimalFormat formatoTiempo;
+    // Fuente
+    private Font fuente;
 
     // Constructor
     public PantallaJuego(PanelJuego panelJuego) {
         this.panelJuego = panelJuego;
         formatoTiempo = new DecimalFormat("#");
+        fuente = new Font("Consolas", Font.BOLD, 25);
     }
 
     @Override
@@ -91,14 +95,17 @@ public class PantallaJuego implements Pantalla {
     public void pintarPantalla(Graphics g) {
         // Pinta el fondo
         rellenarFondo(g);
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, panelJuego.getWidth(), ALTO_PANEL_SUPERIOR);
+        // pinta una linea que separará el tablero de juego del panel de información
+        g.setColor(Color.BLACK);
+        g.drawLine(0, ALTO_PANEL_SUPERIOR, panelJuego.getWidth(), ALTO_PANEL_SUPERIOR);
         // Escribe la puntuación
-        g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("Puntuación: "+ (puntuacion<10?"0":"")+ puntuacion + "/50", 10, 30);
+        g.setFont(fuente);
+        g.drawString("Puntuación:" + (puntuacion < 10 ? "0" : "") + puntuacion + "/50", 10, 30);
         // Escribe el Tiempo
         g.drawString("Tiempo:", 300, 30);
-        g.drawString(formatoTiempo.format(cronometro.getTiempoTranscurrido()/1e9), 420, 30);
-        // pinta una linea que separará el tablero de juego del panel de información
-        g.drawRect(0, 0, panelJuego.getWidth(), ALTO_PANEL_SUPERIOR);
+        g.drawString(tiempoFormateado(), 400, 30);
         // Pinta la manzana
         if (manzana != null) {
             manzana.estampar(g);
@@ -110,6 +117,16 @@ public class PantallaJuego implements Pantalla {
 
     }
 
+    private String tiempoFormateado() {
+        String time = formatoTiempo.format(cronometro.getTiempoTranscurrido()/1e9);
+        if(Integer.parseInt(time) < 10){
+            time = "00"+time;
+        }else if(Integer.parseInt(time) < 100){
+            time = "0"+time;
+        }
+        return time;
+    }
+
     @Override
     public void rellenarFondo(Graphics g) {
         g.drawImage(fondoRedimensionado, 0, 0, null);
@@ -119,13 +136,13 @@ public class PantallaJuego implements Pantalla {
     public void ejecutarFrame() {
         // si la manzana no exite crea una
         if (manzana == null) {
-            crearManzanaFueraDeLaSerpiente();
+            crearManzana();
         } else {
             // Reinicia para que pueda vover a pulsar una tecla de movimiento
             haTecleado = false;
             // si ya hay manzana sigue la ejecución
             try {
-                Thread.sleep(Long.parseLong(""+ (int)(SEGUNDOS_HILO * 1000)));
+                Thread.sleep(Long.parseLong("" + (int) (SEGUNDOS_HILO * 1000)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -136,9 +153,19 @@ public class PantallaJuego implements Pantalla {
             combrobarColisiones();
 
             if (finJuego) {
-                pasarDePantalla(new PantallaDerrota(panelJuego));
+                finDelJuego(victoria);
             }
         }
+    }
+
+    private void finDelJuego(boolean vicroria) {
+        if(vicroria){
+            pasarDePantalla(new PantallaVictoria(panelJuego));
+        }else{
+            pasarDePantalla(new PantallaDerrota(panelJuego));
+        }
+        
+        
     }
 
     /**
@@ -163,7 +190,7 @@ public class PantallaJuego implements Pantalla {
     }
 
     /**
-     * Este método combrobará las posibles colisiones de la serpiente
+     * Este método comprobará las posibles colisiones de la serpiente
      */
     private void combrobarColisiones() {
         // Comprueba la si la serpiente colisiona consigo misma
@@ -193,6 +220,11 @@ public class PantallaJuego implements Pantalla {
                 puntuacion++;
                 addSpriteSerpiente();
                 System.out.println(puntuacion);
+                // comprueba si ha ganado
+                if(puntuacion == 50){
+                    victoria = true;
+                    finJuego = true;
+                }
             }
         }
     }
@@ -201,8 +233,7 @@ public class PantallaJuego implements Pantalla {
      * Este método se encargará de que la manzana siempre salga en una posición en
      * la que no se encuentre ninguna parte de la serpiente
      */
-    private void crearManzanaFueraDeLaSerpiente() {
-        crearManzana();
+    private void comprobarManzanaFueraDeLaSerpiente() {
         // Se recorre la serpiente en busca de una coincidencia
         for (int i = 1; i < serpiente.size(); i++) {
             if (serpiente.get(i).colisiona(manzana)) {
@@ -220,7 +251,7 @@ public class PantallaJuego implements Pantalla {
     private void crearManzana() {
         int posX;
         int posY;
-        do {
+        while (manzana == null) {
             // saca una posición aleatoria dentro de los limites
             posX = new Random().nextInt((panelJuego.getWidth() - LADO_MANZANA));
             // comprueba si esa posición es múltiplo del tamaño de la manzana para que de un
@@ -235,12 +266,11 @@ public class PantallaJuego implements Pantalla {
             if (posY % LADO_MANZANA != 0) {
                 continue;
             }
-            // en el caso de que la ejecución llegue aquí significa que las posiciones son
-            // válidas y se puede salir del bucle
-            break;
-        } while (true);
-        // crea una manzana nueva
-        manzana = new Sprite(RUTA_MANZANA, LADO_MANZANA, posX, posY);
+            // crea una manzana nueva
+            manzana = new Sprite(RUTA_MANZANA, LADO_MANZANA, posX, posY);
+            // compurba que la manzana no esté en una posición en la que está la serpiente
+            comprobarManzanaFueraDeLaSerpiente();
+        } 
     }
 
     /**
@@ -376,6 +406,13 @@ public class PantallaJuego implements Pantalla {
      */
     public static int getPuntuacion() {
         return puntuacion;
+    }
+
+    /**
+     * Devuelve el tiempo transcurrido en la partida
+     */
+    public static long getTiempo() {
+        return cronometro.getTiempoTranscurrido();
     }
 
 }

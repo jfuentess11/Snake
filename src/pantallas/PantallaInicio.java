@@ -27,7 +27,8 @@ public class PantallaInicio implements Pantalla {
     // Color del texto
     private Color texto;
     // Fuente de la pantalla del inicio
-    private Font fuente;
+    private Font fuenteBoton;
+    private Font fuenteTitulo;
     // Imagen de fondo redimensionada
     private BufferedImage fondo = null;
     private Image fondoRedimensionado;
@@ -36,7 +37,8 @@ public class PantallaInicio implements Pantalla {
     public PantallaInicio(PanelJuego panelJuego) {
         this.panelJuego = panelJuego;
         texto = Color.WHITE;
-        fuente = new Font("Arial", Font.BOLD, 30);
+        fuenteBoton = new Font("Arial", Font.BOLD, 30);
+        fuenteTitulo = new Font("Arial", Font.BOLD, 50);
     }
 
     @Override
@@ -56,13 +58,14 @@ public class PantallaInicio implements Pantalla {
         // Pinta el fondo de pantalla
         rellenarFondo(g);
         // Escribe un título con la fuente y el color querido
-        g.setFont(fuente);
+        g.setFont(fuenteTitulo);
         g.setColor(texto);
-        g.drawString("SNAKE CLÁSICO", panelJuego.getWidth() / 2 - 120,
+        g.drawString("SNAKE 2.0", panelJuego.getWidth() / 2 - 130,
                 panelJuego.getHeight() / 4);
 
         // Pinta un cuadrado y un texto de empezar a jugar con colores aleatorios en
         // cada refresco
+        g.setFont(fuenteBoton);
         g.setColor(new Color(colorOscuro(), colorOscuro() , colorOscuro()));
         g.drawRect(80 - 10, (panelJuego.getHeight() - 100) - 30, 165, 80);
         g.drawString("Comenzar", 80, panelJuego.getHeight() - 100);
