@@ -87,9 +87,9 @@ public class PantallaVictoria implements Pantalla {
         g.drawString("¡HAS GANADO!", 120, 100);
         // Texto indicando el tiempo obtenido
         g.setFont(fuentePequenna);
-        g.drawString("Tu tiempo ha sido: ", 110, 135);
+        g.drawString("Tu tiempo ha sido: ", 100, 135);
         g.setFont(fuenteGrande);
-        g.drawString(tiempoFormateado() + " seg", 250, 135);
+        g.drawString(tiempoFormateado() + " seg", 255, 135);
         // Testo de nuevo record
         if(esRecord){
             g.setFont(fuentePequenna);
@@ -113,8 +113,10 @@ public class PantallaVictoria implements Pantalla {
     private String tiempoFormateado() {
         String time = formatoTiempo.format(tiempo/1e9);
         if(Integer.parseInt(time) < 10){
-            time = "00"+time;
+            time = "000"+time;
         }else if(Integer.parseInt(time) < 100){
+            time = "00"+time;
+        }else if(Integer.parseInt(time) < 1000){
             time = "0"+time;
         }
         return time;

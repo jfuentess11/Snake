@@ -104,8 +104,8 @@ public class PantallaJuego implements Pantalla {
         g.setFont(fuente);
         g.drawString("Puntuación:" + (puntuacion < 10 ? "0" : "") + puntuacion + "/50", 10, 30);
         // Escribe el Tiempo
-        g.drawString("Tiempo:", 300, 30);
-        g.drawString(tiempoFormateado(), 400, 30);
+        g.drawString("Tiempo:", 280, 30);
+        g.drawString(tiempoFormateado(), 380, 30);
         // Pinta la manzana
         if (manzana != null) {
             manzana.estampar(g);
@@ -155,8 +155,10 @@ public class PantallaJuego implements Pantalla {
     private String tiempoFormateado() {
         String time = formatoTiempo.format(cronometro.getTiempoTranscurrido()/1e9);
         if(Integer.parseInt(time) < 10){
-            time = "00"+time;
+            time = "000"+time;
         }else if(Integer.parseInt(time) < 100){
+            time = "00"+time;
+        }else if(Integer.parseInt(time) < 1000){
             time = "0"+time;
         }
         return time;
@@ -224,21 +226,6 @@ public class PantallaJuego implements Pantalla {
     }
 
     /**
-     * Este método se encargará de que la manzana siempre salga en una posición en
-     * la que no se encuentre ninguna parte de la serpiente
-     */
-    private void comprobarManzanaFueraDeLaSerpiente() {
-        // Se recorre la serpiente en busca de una coincidencia
-        for (int i = 1; i < serpiente.size(); i++) {
-            if (serpiente.get(i).colisiona(manzana)) {
-                // si hay coincidencia se destruye la manzana para crear otra nueva
-                manzana = null;
-                break;
-            }
-        }
-    }
-
-    /**
      * Método encargado de generar una manzana nueva dentro de los límites del
      * tablero
      */
@@ -265,6 +252,21 @@ public class PantallaJuego implements Pantalla {
             // compurba que la manzana no esté en una posición en la que está la serpiente
             comprobarManzanaFueraDeLaSerpiente();
         } 
+    }
+
+     /**
+     * Este método se encargará de que la manzana siempre salga en una posición en
+     * la que no se encuentre ninguna parte de la serpiente
+     */
+    private void comprobarManzanaFueraDeLaSerpiente() {
+        // Se recorre la serpiente en busca de una coincidencia
+        for (int i = 0; i < serpiente.size(); i++) {
+            if (serpiente.get(i).colisiona(manzana)) {
+                // si hay coincidencia se destruye la manzana para crear otra nueva
+                manzana = null;
+                break;
+            }
+        }
     }
 
     /**
