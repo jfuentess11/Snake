@@ -15,7 +15,7 @@ import java.io.IOException;
  * @author Javier Fuentes
  */
 public class Record {
-    private final File FICHERO = new File("./datos/record.txt");
+    private final File FICHERO = new File("./Datos/record.txt");
     private BufferedReader br;
     private BufferedWriter bw;
     private long record = Long.MAX_VALUE;

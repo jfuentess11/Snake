@@ -2,6 +2,7 @@ package pantallas;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
@@ -9,6 +10,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
@@ -65,7 +69,22 @@ public class PantallaJuego implements Pantalla {
     public PantallaJuego(PanelJuego panelJuego) {
         this.panelJuego = panelJuego;
         formatoTiempo = new DecimalFormat("#");
-        fuente = new Font("Consolas", Font.BOLD, 25);
+        cargarFuente();
+    }
+
+    /**
+     * Método para utilizar la fuente de recurso propio
+     */
+    private void cargarFuente() {
+        InputStream inputStream = null;
+
+        try {
+            inputStream = new FileInputStream("Fuentes/consolas.ttf");
+            fuente = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+        } catch (FontFormatException | IOException e) {
+        }
+       
+        fuente = fuente.deriveFont(Font.PLAIN, 25);
     }
 
     @Override
@@ -104,8 +123,8 @@ public class PantallaJuego implements Pantalla {
         g.setFont(fuente);
         g.drawString("Puntuación:" + (puntuacion < 10 ? "0" : "") + puntuacion + "/50", 10, 30);
         // Escribe el Tiempo
-        g.drawString("Tiempo:", 280, 30);
-        g.drawString(tiempoFormateado(), 380, 30);
+        g.drawString("Tiempo:", 290, 30);
+        g.drawString(tiempoFormateado(), 400, 30);
         // Pinta la manzana
         if (manzana != null) {
             manzana.estampar(g);

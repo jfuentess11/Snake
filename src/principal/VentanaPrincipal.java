@@ -2,6 +2,7 @@ package principal;
 
 import java.awt.GridLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 /**
  * Ventana Principal
@@ -21,6 +22,13 @@ public class VentanaPrincipal {
 		ventana.setBounds(100, 50, 498,400);
 		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ventana.setResizable(false);
+		ventana.setTitle("SNAKE 2.0");
+		try {
+			ventana.setIconImage(new ImageIcon("./Imagenes/icon.png").getImage());
+		} catch (Exception e) {
+			System.out.println("No se ha encontrado el recurso de imagen");
+		}
+		
 	}
 	
 	/**
